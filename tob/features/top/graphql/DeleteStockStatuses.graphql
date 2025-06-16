@@ -1,0 +1,3 @@
+mutation DeleteStockStatuses($itemId: Int!) {
+    deleteStockStatuses(itemId: $itemId)
+}

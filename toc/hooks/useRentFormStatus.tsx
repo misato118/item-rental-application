@@ -33,7 +33,7 @@ const useRentFormStatus = ({ itemInfo }: ItemsProps) => {
             refetch();
             router.replace(`/items/${itemInfo?.id}`, undefined, { shallow: true });
         }
-    }, [router.query.showToast, refetch, router]);
+    }, [router.query.showToast, refetch, router, itemInfo?.id]);
 
     return {
         data,

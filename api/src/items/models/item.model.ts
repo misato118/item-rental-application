@@ -9,63 +9,63 @@ import { RenterApplication } from 'src/renterApplications/models/renterApplicati
 
 @ObjectType()
 export class Item {
-  @Field(type => Int)
-  id: number;
+    @Field(type => Int)
+    id: number;
 
-  @Field(type => String)
-  name: string;
+    @Field(type => String, { nullable: true })
+    name: string;
 
-  @Field(type => String)
-  description: string;
+    @Field(type => String, { nullable: true })
+    description: string;
 
-  @Field(type => Date)
-  createdAt: Date;
+    @Field(type => Date)
+    createdAt: Date;
 
-  @Field(type => Date)
-  updatedAt: Date;
+    @Field(type => Date)
+    updatedAt: Date;
 
-  @Field(type => ItemCategory)
-  category: ItemCategory;
+    @Field(type => ItemCategory, { nullable: true })
+    category: ItemCategory;
 
-  @Field(type => Float)
-  fee: number;
+    @Field(type => Float, { nullable: true })
+    fee: number;
 
-  @Field(type => String)
-  feeType: string;
+    @Field(type => String, { nullable: true })
+    feeType: string;
 
-  @Field(type => Int)
-  maxDuration: number;
+    @Field(type => Int, { nullable: true })
+    maxDuration: number;
 
-  @Field(type => String)
-  maxDurationType: string;
+    @Field(type => String, { nullable: true })
+    maxDurationType: string;
 
-  @Field({ nullable: true })
-  imageURL?: string;
+    @Field({ nullable: true })
+    imageURL?: string;
 
-  @Field(type => Int)
-  deposit: number;
+    @Field(type => Int, { nullable: true })
+    deposit: number;
 
-  //@Field(type => Decimal, { nullable: true })
-  //overallReview?: number;
+    //@Field(type => Decimal, { nullable: true })
+    //overallReview?: number;
 
-  @Field(type => Company)
-  company: Company;
+    @Field(type => Company)
+    company: Company;
 
-  @Field(type => Int)
-  companyId: number;
+    @Field(type => Int)
+    companyId: number;
 
-  @Field(type => [Review])
-  reviews: Review[];
+    @Field(type => [Review], { nullable: true })
+    reviews: Review[];
 
-  @Field(type => OwnerApplication)
-  ownerApplication: OwnerApplication;
+    @Field(type => OwnerApplication)
+    ownerApplication: OwnerApplication;
 
-  @Field(type => StockStatus)
-  stockStatus: StockStatus;
+    @Field(type => StockStatus, { nullable: true })
+    stockStatus: StockStatus;
 
-  //@Field(type => Conversation)
-  //conversations: Conversation;
+    //@Field(type => Conversation)
+    //conversations: Conversation;
 
-  @Field(type => [RenterApplication])
-  renterApplications: RenterApplication[];
+    @Field(type => [RenterApplication], { nullable: true })
+    renterApplications: RenterApplication[];
 }

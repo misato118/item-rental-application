@@ -1,3 +1,4 @@
+import ActionReturn from "@/components/ActionReturn";
 import ApplicationFilter from "@/components/ApplicationFilter";
 import Error from "@/components/Error";
 import RootLayout from "@/components/Layout";
@@ -7,6 +8,7 @@ import { GetRenterInfoQuery } from "@/features/utils/graphql/typeDefs/graphql";
 import useLoginConfirmation from "@/hooks/useLoginConfirmation";
 import usePagination from "@/hooks/usePagination";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { formatDistance } from "date-fns";
 import { NextRouter } from "next/router";
 import { ReactElement, useState } from "react";
 
@@ -14,7 +16,6 @@ type RenterApplicationData = NonNullable<
   GetRenterInfoQuery["renterInfo"]
 >["renterApplications"][number];
 
-// feature/add-user-item-list-page is branched from feature/add-user-page
 const RenterItemList = () => {
     const {
         data,
@@ -31,6 +32,15 @@ const RenterItemList = () => {
     } = usePagination(data?.renterInfo.renterApplications ?? [], "application");
 
     const [selectedApplication, setSelectedApplication] = useState<RenterApplicationData | null>(null);
+    const [selectedAction, setSelectedAction] = useState<"Confirm Return" | "N/A" | null>(null);
+
+    if (loading) return 'Loading...';
+
+    if (error || !data?.renterInfo) {
+        return (
+            <Error />
+        );
+    }
 
     if (loading) return 'Loading...';
 
@@ -68,10 +78,13 @@ const RenterItemList = () => {
                                         <td>{application.item?.id}</td>
                                         <td>{application.item?.name}</td>
                                         <td>{application.item?.company.name}</td>
-                                        <td>
-                                            {application.renterApplicationStatuses?.length
-                                                ? getFormattedDate(application.renterApplicationStatuses)?.status
-                                                : "N/A"}
+                                        <td className="flex justify-center items-center">
+                                            <div
+                                                className={`badge badge-outline border-${getFormattedDate(application.renterApplicationStatuses)?.status ?? "UNAVAILABLE"} text-${getFormattedDate(application.renterApplicationStatuses)?.status ?? "UNAVAILABLE"}`}>
+                                                {application.renterApplicationStatuses?.length
+                                                    ? getFormattedDate(application.renterApplicationStatuses)?.status
+                                                    : "N/A"}
+                                            </div>
                                         </td>
                                         <td>Return by</td>
                                         <td>
@@ -80,11 +93,16 @@ const RenterItemList = () => {
                                                 : "N/A"}
                                         </td>
                                         <td>
-                                            {application.renterApplicationStatuses?.length
-                                                ? getNextAction(
-                                                    application.renterApplicationStatuses[application.renterApplicationStatuses.length - 1].status
-                                                )
-                                                : ""}
+                                            {application.renterApplicationStatuses?.length ? (() => {
+                                                const action = getNextAction(application.renterApplicationStatuses[application.renterApplicationStatuses.length - 1].status);
+                                                return (
+                                                    <a
+                                                        className="cursor-pointer"
+                                                        onClick={() => { setSelectedAction(action); setSelectedApplication(application); }}>
+                                                            {action}
+                                                    </a>
+                                                );
+                                            })() : <p>N/A</p>}
                                         </td>
                                         <td><a
                                                 className="cursor-pointer"
@@ -115,10 +133,19 @@ const RenterItemList = () => {
                 </div>
             </div>
 
-            {selectedApplication && (
+            {selectedApplication && !selectedAction && (
                 <SubmittedRentalForm 
                     application={selectedApplication}
                     onClose={() => setSelectedApplication(null)}
+                />
+            )}
+
+            {selectedAction && selectedApplication && (
+                <ActionReturn 
+                    application={selectedApplication}
+                    setSelectedApplication={setSelectedApplication}
+                    action={selectedAction}
+                    onClose={() => setSelectedAction(null)}
                 />
             )}
         </div>
@@ -143,12 +170,13 @@ export default RenterItemList;
 
 function getNextAction(currentStatus: string | null | undefined) {
     if (currentStatus === "RENTED") {
-        return "Cannot return / Returned";
-    } else if (currentStatus === "RETURNED" || currentStatus === "COMPLETED") {
-        return "Review";
-    }
+        return "Confirm Return";
+    } //else if (currentStatus === "RETURNED" || currentStatus === "COMPLETED") {
+        //return "Review";
+    //}
+    // TODO: Add a review system here
 
-    return "";
+    return "N/A";
 }
 
 function getFormattedDate(
@@ -159,16 +187,11 @@ function getFormattedDate(
     }[] | null | undefined
 ) {
     if (statusArr?.length) {
-        const date = new Date(statusArr[statusArr.length - 1].updatedAt.toString());
-        const formattedDate = date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        });
+        const formattedDate = formatDistance(new Date(statusArr[statusArr.length - 1].updatedAt), new Date(), { addSuffix: true });
 
         return {
             status: statusArr[statusArr.length - 1].status,
-            date: formattedDate
+            date: formattedDate            
         }
     }
 

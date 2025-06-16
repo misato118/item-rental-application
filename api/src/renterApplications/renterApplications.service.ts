@@ -17,9 +17,7 @@ export class RenterApplicationsService {
 
     // Creates a new renter application
     create(createFormInput: CreateFormInput) {
-        const renterId = createFormInput.renterId;
-        const itemId = createFormInput.itemId;
-        const updatedInput = { ...createFormInput, ['renterId']: undefined, ['itemId']: undefined };
+        const { renterId, itemId, ...updatedInput } = createFormInput;
 
         // When a renter or item id is not provided
         if (renterId == null || itemId == null) {
@@ -96,6 +94,13 @@ export class RenterApplicationsService {
                 }
             }
         });
+    }
+
+    async saveAllRenterAppStatuses(appStatusArr: ChangeRenterAppStatusInput[]): Promise<boolean> {
+        for (const change of appStatusArr) {
+            await this.changeRenterAppStatus(change);
+        }
+        return true;
     }
 
     /*

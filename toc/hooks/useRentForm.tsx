@@ -14,6 +14,12 @@ const priceDictionary: Record<string, string> = {
 const schema = z.object({
     offeringPrice: z.number(),
     offeringDuration: z.number(),
+}).refine((data) => data.offeringPrice !== 0, {
+    message: "Fee cannot be 0",
+    path: ["offeringPrice"]    
+}).refine((data) => data.offeringDuration != 0, {
+    message: "Duration cannot be 0",
+    path: ["offeringDuration"]
 });
 
 type Schema = z.infer<typeof schema>
@@ -30,6 +36,13 @@ const useRentForm = (renterId: number) => {
     const [createRenterApplicationMutation] = useMutation(CreateRenterApplicationDocument);
 
     const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
+        const result = schema.safeParse(data);
+
+        if (!result.success) {
+            console.error("Validation failed", result.error.format());
+            return;
+        }
+
         try {
             const response = await createRenterApplicationMutation({
                 variables: {

@@ -3,7 +3,7 @@ import Rating from "./Rating";
 import { GetItemInfoQuery } from "@/features/utils/graphql/typeDefs/graphql";
 
 interface ReviewsProps {
-    reviews?: GetItemInfoQuery["itemInfo"] extends { reviews: infer T } ? T : undefined;
+    reviews?: NonNullable<NonNullable<GetItemInfoQuery["itemInfo"]>["reviews"]>;
 }
 
 // This shows a list of reviews for an item
@@ -11,7 +11,7 @@ const Reviews = (props: ReviewsProps) => {
     return (
         <main>
             {props.reviews?.length ? (props.reviews?.map((review, index) => (
-                <div key={review.id + index}>
+                <div key={review?.id + index}>
                     <div className="flex items-center">
                         <div className="h-10 w-10 mr-2"><UserCircleIcon /></div>
                         <p className="font-bold">User</p>

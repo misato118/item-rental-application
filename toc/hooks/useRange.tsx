@@ -1,6 +1,8 @@
+import { Schema } from "@/components/Filters";
 import { useEffect } from "react";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 
-const useRange = (range: number[], setValue: any, watch: any) => {
+const useRange = (range: number[], setValue: UseFormSetValue<Schema>, watch: UseFormWatch<Schema>) => {
     const registerName: "maxPrice" | "maxDuration" = range[range.length - 1] >= 100 ? "maxPrice" : "maxDuration";
     const maxValue = watch(registerName, 75);
 

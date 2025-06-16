@@ -4,14 +4,22 @@
 
 """Owner application status for an item"""
 enum ApplicationStatus {
-  """When an owner application is accepted"""
-  ACCEPTED
-
-  """When an owner applied to publish an item."""
-  APPLIED
-
   """When an owner application is declined."""
   DECLINED
+
+  """When an owner created an item but has not applied yet."""
+  DRAFT
+
+  """When an owner applied to publish an item."""
+  PENDING
+
+  """When an owner application is accepted and published"""
+  PUBLISHED
+}
+
+input ChangeRenterAppStatusInput {
+  id: Int!
+  status: RenterApplicationStatusType!
 }
 
 type Company {
@@ -41,6 +49,7 @@ input CreateEmployeeInput {
   email: String!
   firstName: String!
   lastName: String!
+  password: String!
 }
 
 input CreateFormInput {
@@ -53,7 +62,8 @@ input CreateFormInput {
 input CreateItemInput {
   category: ItemCategory
   company: String!
-  deposit: Int
+  currentStock: Int
+  deposit: Float
   description: String
   fee: Float
   feeType: String
@@ -62,6 +72,7 @@ input CreateItemInput {
   maxDuration: Int
   maxDurationType: String
   name: String
+  totalStock: Int
 }
 
 input CreateRenterInput {
@@ -81,6 +92,12 @@ input CreateReviewInput {
   title: String!
 }
 
+input CreateStockStatusInput {
+  currentStock: Int!
+  itemId: Int!
+  totalStock: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -96,6 +113,7 @@ type Employee {
   id: Int!
   imageURL: String
   lastName: String!
+  password: String!
   updatedAt: DateTime!
 }
 
@@ -119,23 +137,23 @@ type Form {
 }
 
 type Item {
-  category: ItemCategory!
+  category: ItemCategory
   company: Company!
   companyId: Int!
   createdAt: DateTime!
-  deposit: Int!
-  description: String!
-  fee: Float!
-  feeType: String!
+  deposit: Int
+  description: String
+  fee: Float
+  feeType: String
   id: Int!
   imageURL: String
-  maxDuration: Int!
-  maxDurationType: String!
-  name: String!
+  maxDuration: Int
+  maxDurationType: String
+  name: String
   ownerApplication: OwnerApplication!
-  renterApplications: [RenterApplication!]!
-  reviews: [Review!]!
-  stockStatus: StockStatus!
+  renterApplications: [RenterApplication!]
+  reviews: [Review!]
+  stockStatus: StockStatus
   updatedAt: DateTime!
 }
 
@@ -151,19 +169,34 @@ enum ItemCategory {
   TOOL
 }
 
+input LoginEmployeeInput {
+  password: String!
+  username: String!
+}
+
 input LoginRenterInput {
   password: String!
   username: String!
 }
 
 type Mutation {
+  changeRenterAppStatus(changeRenterAppStatusInput: ChangeRenterAppStatusInput!): Boolean!
   createCompany(createCompanyInput: CreateCompanyInput!): Company!
   createEmployee(createEmployeeInput: CreateEmployeeInput!): Employee!
   createItem(createItemInput: CreateItemInput!): Company!
   createRenter(createRenterInput: CreateRenterInput!): Renter!
   createRenterApplication(createRenterApplicationInput: CreateFormInput!): RenterApplication!
   createReview(createReviewInput: CreateReviewInput!): Item!
+  createStockStatus(createStockStatusInput: CreateStockStatusInput!): Item!
+  deleteConversations(itemId: Int!): Int!
   deleteItem(itemId: Int!): Item!
+  deleteOwnerApplications(itemId: Int!): Int!
+  deleteRenterApplications(itemId: Int!): Int!
+  deleteReviews(itemId: Int!): Int!
+  deleteStockStatuses(itemId: Int!): Int!
+  saveAllRenterAppStatuses(saveAllRenterAppStatusesInput: SaveAllRenterAppStatusesInput!): Boolean!
+  submitItem(createItemInput: CreateItemInput!): Item!
+  updateItem(createItemInput: CreateItemInput!): Item!
 }
 
 type OwnerApplication {
@@ -177,15 +210,20 @@ type Query {
   canApply(canApplyInput: FindApplicationInput!): Boolean!
   companies: [Company!]!
   companyInfo(companyName: String!): Company!
+  employeeId(loginEmployeeInput: LoginEmployeeInput!): Employee!
+  employeeInfo(employeeId: Int!): Employee!
   employees: [Employee!]!
   itemByCompany(companyName: String!): Company!
-  itemInfo(itemId: Int!): Item!
+  itemCategories: [ItemCategory!]!
+  itemInfo(itemId: Int!): Item
   items(filter: FilterItemInput): [Item!]!
+  ownerApplication(itemId: Int!): OwnerApplication!
   renterApplications: [RenterApplication!]!
   renterId(loginRenterInput: LoginRenterInput!): Renter!
   renterInfo(renterId: Int!): Renter!
   renters: [Renter!]!
   reviews: [Review!]!
+  stockStatus(itemId: Int!): StockStatus!
 }
 
 type Renter {
@@ -255,6 +293,10 @@ type Review {
   rating: Int!
   title: String!
   updatedAt: DateTime!
+}
+
+input SaveAllRenterAppStatusesInput {
+  appStatusArr: [ChangeRenterAppStatusInput!]!
 }
 
 type StockStatus {

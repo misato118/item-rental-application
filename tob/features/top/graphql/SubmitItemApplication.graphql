@@ -1,0 +1,12 @@
+mutation SubmitItemApplication($createItemInput: CreateItemInput!) {
+    submitItem(createItemInput: $createItemInput) {
+        id
+        name
+        ownerApplication {
+            id
+            status
+            createdAt
+            updatedAt
+        }
+    }
+}

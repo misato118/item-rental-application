@@ -1,0 +1,27 @@
+query GetEmployeeInfo($employeeId: Int!) {
+    employeeInfo(employeeId: $employeeId) {
+        id
+        firstName
+        lastName
+        birthDate
+        email
+        imageURL
+        company {
+            id
+            name
+            items {
+                id
+                name
+                ownerApplication {
+                    id
+                    status
+                    updatedAt
+                }
+                stockStatus {
+                    totalStock
+                    currentStock
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import RootLayout from "@/components/Layout";
 import useLogin from "@/hooks/useLogin";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 
 const Login = () => {
     const {
@@ -11,6 +11,16 @@ const Login = () => {
         handleSubmit,
         onSubmit
     } = useLogin();
+
+    useEffect(() => {
+        const renterId = localStorage.getItem("renterId");
+        if (renterId) {
+            router.push({
+                pathname: "/renters/[renterId]",
+                query: { renterId: renterId }
+            });
+        }
+    }, [router]);
 
     return (
         <div className="flex items-center bg-base-200 h-full py-10 overflow-y-auto">

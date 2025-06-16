@@ -45,7 +45,7 @@ function getButtonLabel(typeValue: CategoryType) {
         return "Review ▼";
     } else if (typeValue === "POSTED DATE") {
         return "Posted Date ▼";
-    } else {
-        return "Select ▼";
     }
+    
+    return "Select ▼";
 }

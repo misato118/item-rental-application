@@ -1,0 +1,7 @@
+mutation SaveItemApplication($createItemInput: CreateItemInput!) {
+    updateItem(createItemInput: $createItemInput) {
+        id
+        name
+        feeType
+    }
+}

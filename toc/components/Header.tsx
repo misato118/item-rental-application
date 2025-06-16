@@ -15,10 +15,9 @@ const Header = () => {
                 <div className="lg:flex lg:flex-1 lg:justify-start items-center grid grid-cols-4 gap-x-5">
                     <a href="#" className="-m-1.5 p-1.5">
                         <span className="sr-only">Application Name</span>
-                        {/* TODO: Change this logo later */}
                         <Image
                             alt="Logo"
-                            src="/sampleImg.png"
+                            src="/Logo.png"
                             width={32}
                             height={32}
                             onClick={() => router.push("/")}

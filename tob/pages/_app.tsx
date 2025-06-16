@@ -1,19 +1,24 @@
+import type { AppProps } from "next/app";
 import "@/styles/globals.css";
-import type { ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import { ApolloProvider } from "@apollo/client";
+import { client } from "@/features/utils/providers/apollo";
+import { NextPage } from "next";
+import { ReactElement, ReactNode } from "react";
 
 export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
+    getLayout?: (page: ReactElement) => ReactNode
 }
- 
+
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
+    Component: NextPageWithLayout
 }
- 
+
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
-  // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => page)
- 
-  return getLayout(<Component {...pageProps} />)
+    const getLayout = Component.getLayout ?? ((page) => page)
+
+    return (
+        <ApolloProvider client={client}>
+            {getLayout(<Component {...pageProps} />)}
+        </ApolloProvider>
+    );
 }

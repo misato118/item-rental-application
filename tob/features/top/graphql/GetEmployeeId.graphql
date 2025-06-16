@@ -1,0 +1,9 @@
+query GetEmployeeId($loginEmployeeInput: LoginEmployeeInput!) {
+    employeeId(loginEmployeeInput: $loginEmployeeInput) {
+        id
+        company {
+            id
+            name
+        }
+    }
+}

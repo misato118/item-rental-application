@@ -38,21 +38,21 @@ const RentalApplicationForm: NextPageWithLayout = () => {
                         <tbody>
                             <tr>
                                 <th>Name</th>
-                                <td>{data?.itemInfo.name}</td>
+                                <td>{data?.itemInfo?.name}</td>
                             </tr>
                             <tr>
                                 <th>Owner</th>
-                                <td>{data?.itemInfo.company.name}</td>
+                                <td>{data?.itemInfo?.company.name}</td>
                             </tr>
                             <tr>
                                 <th>Asking Fee</th>
-                                <td>{data?.itemInfo.fee} /{priceDictionary[data?.itemInfo.feeType]}</td>
+                                <td>{data?.itemInfo?.fee} /{priceDictionary[data?.itemInfo?.feeType ?? 0]}</td>
                             </tr>
                         </tbody>
                     </table>
                     <p className="mb-4">Please specify your offering price and rental duration to apply for this item.</p>
                     <div>
-                        <RentForm feeType={data?.itemInfo.feeType} maxDurationType={data?.itemInfo.maxDurationType} renterId={renterId} />
+                        <RentForm feeType={data?.itemInfo?.feeType ?? ""} maxDurationType={data?.itemInfo?.maxDurationType ?? ""} renterId={renterId} />
                     </div>
                 </div>
             </div>

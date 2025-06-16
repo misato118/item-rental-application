@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 interface CompanyProps {
-    company?: GetItemInfoQuery["itemInfo"] extends { company: infer T } ? T : undefined;
+    company?: NonNullable<NonNullable<GetItemInfoQuery["itemInfo"]>["company"]>;
 }
 
 const OwnerDetailsWithButtons = ({ company }: CompanyProps) => {

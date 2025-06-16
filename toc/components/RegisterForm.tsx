@@ -11,16 +11,17 @@ const schema = z.object({
     email: z.string().email(),
     password: z.string(),
     confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
 });
 
 type Schema = z.infer<typeof schema>
 
 const RegisterForm = () => {
     const router = useRouter();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<Schema>();
+    const { register, handleSubmit } = useForm<Schema>();
     const [createRenterMutation] = useMutation(CreateRenterDocument);
-
-    const password = watch("password");
 
     const onSubmit: SubmitHandler<Schema> = async (data: Schema) => {
         const result = schema.safeParse(data);
@@ -107,13 +108,10 @@ const RegisterForm = () => {
                     placeholder="Confirm Password"
                     {...register("confirmPassword", { required: true })}
                 />
-                {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
-                )}
             </fieldset>
 
             <div className="flex justify-center my-4">
-                <button type="submit" className="btn btn-info rounded-full">Register</button>
+                <button type="submit" className="btn btn-info rounded-full text-white">Register</button>
             </div>
 
             <p>If you already have am account, {" "}

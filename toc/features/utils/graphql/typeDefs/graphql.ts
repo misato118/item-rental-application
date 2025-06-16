@@ -20,13 +20,20 @@ export type Scalars = {
 
 /** Owner application status for an item */
 export enum ApplicationStatus {
-  /** When an owner application is accepted */
-  Accepted = 'ACCEPTED',
-  /** When an owner applied to publish an item. */
-  Applied = 'APPLIED',
   /** When an owner application is declined. */
-  Declined = 'DECLINED'
+  Declined = 'DECLINED',
+  /** When an owner created an item but has not applied yet. */
+  Draft = 'DRAFT',
+  /** When an owner applied to publish an item. */
+  Pending = 'PENDING',
+  /** When an owner application is accepted and published */
+  Published = 'PUBLISHED'
 }
+
+export type ChangeRenterAppStatusInput = {
+  id: Scalars['Int']['input'];
+  status: RenterApplicationStatusType;
+};
 
 export type Company = {
   __typename?: 'Company';
@@ -55,6 +62,7 @@ export type CreateEmployeeInput = {
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type CreateFormInput = {
@@ -67,7 +75,8 @@ export type CreateFormInput = {
 export type CreateItemInput = {
   category?: InputMaybe<ItemCategory>;
   company: Scalars['String']['input'];
-  deposit?: InputMaybe<Scalars['Int']['input']>;
+  currentStock?: InputMaybe<Scalars['Int']['input']>;
+  deposit?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
   feeType?: InputMaybe<Scalars['String']['input']>;
@@ -76,6 +85,7 @@ export type CreateItemInput = {
   maxDuration?: InputMaybe<Scalars['Int']['input']>;
   maxDurationType?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  totalStock?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type CreateRenterInput = {
@@ -95,6 +105,12 @@ export type CreateReviewInput = {
   title: Scalars['String']['input'];
 };
 
+export type CreateStockStatusInput = {
+  currentStock: Scalars['Int']['input'];
+  itemId: Scalars['Int']['input'];
+  totalStock: Scalars['Int']['input'];
+};
+
 export type Employee = {
   __typename?: 'Employee';
   birthDate: Scalars['DateTime']['output'];
@@ -106,6 +122,7 @@ export type Employee = {
   id: Scalars['Int']['output'];
   imageURL?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
+  password: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -131,23 +148,23 @@ export type Form = {
 
 export type Item = {
   __typename?: 'Item';
-  category: ItemCategory;
+  category?: Maybe<ItemCategory>;
   company: Company;
   companyId: Scalars['Int']['output'];
   createdAt: Scalars['DateTime']['output'];
-  deposit: Scalars['Int']['output'];
-  description: Scalars['String']['output'];
-  fee: Scalars['Float']['output'];
-  feeType: Scalars['String']['output'];
+  deposit?: Maybe<Scalars['Int']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  feeType?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   imageURL?: Maybe<Scalars['String']['output']>;
-  maxDuration: Scalars['Int']['output'];
-  maxDurationType: Scalars['String']['output'];
-  name: Scalars['String']['output'];
+  maxDuration?: Maybe<Scalars['Int']['output']>;
+  maxDurationType?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
   ownerApplication: OwnerApplication;
-  renterApplications: Array<RenterApplication>;
-  reviews: Array<Review>;
-  stockStatus: StockStatus;
+  renterApplications?: Maybe<Array<RenterApplication>>;
+  reviews?: Maybe<Array<Review>>;
+  stockStatus?: Maybe<StockStatus>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -161,6 +178,11 @@ export enum ItemCategory {
   Tool = 'TOOL'
 }
 
+export type LoginEmployeeInput = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+};
+
 export type LoginRenterInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -168,13 +190,28 @@ export type LoginRenterInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changeRenterAppStatus: Scalars['Boolean']['output'];
   createCompany: Company;
   createEmployee: Employee;
   createItem: Company;
   createRenter: Renter;
   createRenterApplication: RenterApplication;
   createReview: Item;
+  createStockStatus: Item;
+  deleteConversations: Scalars['Int']['output'];
   deleteItem: Item;
+  deleteOwnerApplications: Scalars['Int']['output'];
+  deleteRenterApplications: Scalars['Int']['output'];
+  deleteReviews: Scalars['Int']['output'];
+  deleteStockStatuses: Scalars['Int']['output'];
+  saveAllRenterAppStatuses: Scalars['Boolean']['output'];
+  submitItem: Item;
+  updateItem: Item;
+};
+
+
+export type MutationChangeRenterAppStatusArgs = {
+  changeRenterAppStatusInput: ChangeRenterAppStatusInput;
 };
 
 
@@ -208,8 +245,53 @@ export type MutationCreateReviewArgs = {
 };
 
 
+export type MutationCreateStockStatusArgs = {
+  createStockStatusInput: CreateStockStatusInput;
+};
+
+
+export type MutationDeleteConversationsArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteItemArgs = {
   itemId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteOwnerApplicationsArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteRenterApplicationsArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteReviewsArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteStockStatusesArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
+export type MutationSaveAllRenterAppStatusesArgs = {
+  saveAllRenterAppStatusesInput: SaveAllRenterAppStatusesInput;
+};
+
+
+export type MutationSubmitItemArgs = {
+  createItemInput: CreateItemInput;
+};
+
+
+export type MutationUpdateItemArgs = {
+  createItemInput: CreateItemInput;
 };
 
 export type OwnerApplication = {
@@ -225,15 +307,20 @@ export type Query = {
   canApply: Scalars['Boolean']['output'];
   companies: Array<Company>;
   companyInfo: Company;
+  employeeId: Employee;
+  employeeInfo: Employee;
   employees: Array<Employee>;
   itemByCompany: Company;
-  itemInfo: Item;
+  itemCategories: Array<ItemCategory>;
+  itemInfo?: Maybe<Item>;
   items: Array<Item>;
+  ownerApplication: OwnerApplication;
   renterApplications: Array<RenterApplication>;
   renterId: Renter;
   renterInfo: Renter;
   renters: Array<Renter>;
   reviews: Array<Review>;
+  stockStatus: StockStatus;
 };
 
 
@@ -244,6 +331,16 @@ export type QueryCanApplyArgs = {
 
 export type QueryCompanyInfoArgs = {
   companyName: Scalars['String']['input'];
+};
+
+
+export type QueryEmployeeIdArgs = {
+  loginEmployeeInput: LoginEmployeeInput;
+};
+
+
+export type QueryEmployeeInfoArgs = {
+  employeeId: Scalars['Int']['input'];
 };
 
 
@@ -262,6 +359,11 @@ export type QueryItemsArgs = {
 };
 
 
+export type QueryOwnerApplicationArgs = {
+  itemId: Scalars['Int']['input'];
+};
+
+
 export type QueryRenterIdArgs = {
   loginRenterInput: LoginRenterInput;
 };
@@ -269,6 +371,11 @@ export type QueryRenterIdArgs = {
 
 export type QueryRenterInfoArgs = {
   renterId: Scalars['Int']['input'];
+};
+
+
+export type QueryStockStatusArgs = {
+  itemId: Scalars['Int']['input'];
 };
 
 export type Renter = {
@@ -338,6 +445,10 @@ export type Review = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type SaveAllRenterAppStatusesInput = {
+  appStatusArr: Array<ChangeRenterAppStatusInput>;
+};
+
 export type StockStatus = {
   __typename?: 'StockStatus';
   currentStock: Scalars['Int']['output'];
@@ -373,21 +484,21 @@ export type GetAllItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllItemsQuery = { __typename?: 'Query', items: Array<{ __typename?: 'Item', id: number, name: string, category: ItemCategory, fee: number, feeType: string, maxDuration: number, maxDurationType: string, imageURL?: string | null }> };
+export type GetAllItemsQuery = { __typename?: 'Query', items: Array<{ __typename?: 'Item', id: number, name?: string | null, category?: ItemCategory | null, fee?: number | null, feeType?: string | null, maxDuration?: number | null, maxDurationType?: string | null, imageURL?: string | null }> };
 
 export type GetCompanyInfoQueryVariables = Exact<{
   companyName: Scalars['String']['input'];
 }>;
 
 
-export type GetCompanyInfoQuery = { __typename?: 'Query', companyInfo: { __typename?: 'Company', id: number, name: string, description: string, createdAt: Date, logoURL?: string | null, items?: Array<{ __typename?: 'Item', id: number, name: string, fee: number, feeType: string, imageURL?: string | null }> | null } };
+export type GetCompanyInfoQuery = { __typename?: 'Query', companyInfo: { __typename?: 'Company', id: number, name: string, description: string, createdAt: Date, logoURL?: string | null, items?: Array<{ __typename?: 'Item', id: number, name?: string | null, fee?: number | null, feeType?: string | null, imageURL?: string | null }> | null } };
 
 export type GetItemInfoQueryVariables = Exact<{
   itemId: Scalars['Int']['input'];
 }>;
 
 
-export type GetItemInfoQuery = { __typename?: 'Query', itemInfo: { __typename?: 'Item', id: number, name: string, description: string, createdAt: Date, category: ItemCategory, fee: number, feeType: string, maxDuration: number, maxDurationType: string, imageURL?: string | null, deposit: number, company: { __typename?: 'Company', name: string, logoURL?: string | null, description: string }, reviews: Array<{ __typename?: 'Review', id: number, title: string, contents: string, rating: number }> } };
+export type GetItemInfoQuery = { __typename?: 'Query', itemInfo?: { __typename?: 'Item', id: number, name?: string | null, description?: string | null, createdAt: Date, category?: ItemCategory | null, fee?: number | null, feeType?: string | null, maxDuration?: number | null, maxDurationType?: string | null, imageURL?: string | null, deposit?: number | null, company: { __typename?: 'Company', name: string, logoURL?: string | null, description: string }, reviews?: Array<{ __typename?: 'Review', id: number, title: string, contents: string, rating: number }> | null } | null };
 
 export type GetRenterIdQueryVariables = Exact<{
   loginRenterInput: LoginRenterInput;
@@ -401,7 +512,14 @@ export type GetRenterInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetRenterInfoQuery = { __typename?: 'Query', renterInfo: { __typename?: 'Renter', id: number, username: string, firstName: string, lastName: string, birthDate?: Date | null, email: string, createdAt: Date, updatedAt: Date, imageURL?: string | null, renterApplications: Array<{ __typename?: 'RenterApplication', id: number, form?: { __typename?: 'Form', id: number, offeringPrice: number, offeringDuration: number } | null, renterApplicationStatuses?: Array<{ __typename?: 'RenterApplicationStatus', id: number, status: RenterApplicationStatusType, updatedAt: Date }> | null, item?: { __typename?: 'Item', id: number, name: string, fee: number, feeType: string, maxDuration: number, maxDurationType: string, company: { __typename?: 'Company', name: string } } | null }> } };
+export type GetRenterInfoQuery = { __typename?: 'Query', renterInfo: { __typename?: 'Renter', id: number, username: string, firstName: string, lastName: string, birthDate?: Date | null, email: string, createdAt: Date, updatedAt: Date, imageURL?: string | null, renterApplications: Array<{ __typename?: 'RenterApplication', id: number, form?: { __typename?: 'Form', id: number, offeringPrice: number, offeringDuration: number } | null, renterApplicationStatuses?: Array<{ __typename?: 'RenterApplicationStatus', id: number, status: RenterApplicationStatusType, updatedAt: Date }> | null, item?: { __typename?: 'Item', id: number, name?: string | null, fee?: number | null, feeType?: string | null, maxDuration?: number | null, maxDurationType?: string | null, company: { __typename?: 'Company', name: string } } | null }> } };
+
+export type ChangeRenterAppStatusMutationVariables = Exact<{
+  changeRenterAppStatusInput: ChangeRenterAppStatusInput;
+}>;
+
+
+export type ChangeRenterAppStatusMutation = { __typename?: 'Mutation', changeRenterAppStatus: boolean };
 
 
 export const CreateRenterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateRenter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createRenterInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateRenterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createRenter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createRenterInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createRenterInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateRenterMutation, CreateRenterMutationVariables>;
@@ -412,3 +530,4 @@ export const GetCompanyInfoDocument = {"kind":"Document","definitions":[{"kind":
 export const GetItemInfoDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetItemInfo"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"itemId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"itemInfo"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"itemId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"itemId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"fee"}},{"kind":"Field","name":{"kind":"Name","value":"feeType"}},{"kind":"Field","name":{"kind":"Name","value":"maxDuration"}},{"kind":"Field","name":{"kind":"Name","value":"maxDurationType"}},{"kind":"Field","name":{"kind":"Name","value":"imageURL"}},{"kind":"Field","name":{"kind":"Name","value":"deposit"}},{"kind":"Field","name":{"kind":"Name","value":"company"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"logoURL"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reviews"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"contents"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}}]}}]}}]}}]} as unknown as DocumentNode<GetItemInfoQuery, GetItemInfoQueryVariables>;
 export const GetRenterIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRenterId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginRenterInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginRenterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"renterId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginRenterInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginRenterInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetRenterIdQuery, GetRenterIdQueryVariables>;
 export const GetRenterInfoDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRenterInfo"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"renterId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"renterInfo"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"renterId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"renterId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"birthDate"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"imageURL"}},{"kind":"Field","name":{"kind":"Name","value":"renterApplications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"form"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"offeringPrice"}},{"kind":"Field","name":{"kind":"Name","value":"offeringDuration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"renterApplicationStatuses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"fee"}},{"kind":"Field","name":{"kind":"Name","value":"feeType"}},{"kind":"Field","name":{"kind":"Name","value":"maxDuration"}},{"kind":"Field","name":{"kind":"Name","value":"maxDurationType"}},{"kind":"Field","name":{"kind":"Name","value":"company"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetRenterInfoQuery, GetRenterInfoQueryVariables>;
+export const ChangeRenterAppStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ChangeRenterAppStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changeRenterAppStatusInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangeRenterAppStatusInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changeRenterAppStatus"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"changeRenterAppStatusInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changeRenterAppStatusInput"}}}]}]}}]} as unknown as DocumentNode<ChangeRenterAppStatusMutation, ChangeRenterAppStatusMutationVariables>;

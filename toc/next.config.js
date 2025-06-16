@@ -3,6 +3,9 @@ const nextConfig = {
   env: {
     graphql: "http://localhost:12000/graphql",
   },
+  images: {
+    unoptimized: true,
+  },
 };
 
 module.exports = nextConfig;

@@ -1,23 +1,27 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ApplicationStatus {
-    APPLIED = 'APPLIED',
+    DRAFT = 'DRAFT',
+    PENDING = 'PENDING',
     DECLINED = 'DECLINED',
-    ACCEPTED = 'ACCEPTED',
+    PUBLISHED = 'PUBLISHED',
 }
 
 registerEnumType(ApplicationStatus, {
-  name: 'ApplicationStatus',
-  description: 'Owner application status for an item',
-  valuesMap: {
-    APPLIED: {
-      description: 'When an owner applied to publish an item.',
+    name: 'ApplicationStatus',
+    description: 'Owner application status for an item',
+    valuesMap: {
+        DRAFT: {
+            description: 'When an owner created an item but has not applied yet.',
+        },
+        PENDING: {
+            description: 'When an owner applied to publish an item.',
+        },
+        DECLINED: {
+            description: 'When an owner application is declined.',
+        },
+        PUBLISHED: {
+            description: 'When an owner application is accepted and published',
+        },
     },
-    DECLINED: {
-      description: 'When an owner application is declined.',
-    },
-    ACCEPTED: {
-      description: 'When an owner application is accepted',
-    },
-  },
 });

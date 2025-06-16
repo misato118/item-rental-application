@@ -1,0 +1,24 @@
+query GetApplicationForm($itemId: Int!) {
+    itemInfo(itemId: $itemId) {
+        id
+        name
+        description
+        createdAt
+        category
+        fee
+        feeType
+        maxDuration
+        maxDurationType
+        imageURL
+        deposit
+        company {
+            name
+            logoURL
+            description
+        }
+        stockStatus {
+            totalStock
+            currentStock
+        }
+    }
+}

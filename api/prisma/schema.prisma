@@ -20,6 +20,7 @@ model Employee {
   lastName  String
   birthDate DateTime
   email     String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imageURL  String?
@@ -91,9 +92,10 @@ model OwnerApplication {
 }
 
 enum ApplicationStatus {
-  APPLIED
+  DRAFT
+  PENDING
   DECLINED
-  ACCEPTED
+  PUBLISHED
 }
 
 model StockStatus {

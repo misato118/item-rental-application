@@ -1,0 +1,3 @@
+mutation DeleteConversations($itemId: Int!) {
+    deleteConversations(itemId: $itemId)
+}

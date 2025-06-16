@@ -25,9 +25,16 @@ const useLogin = () => {
             //router.push(redirectPath);
             router.push("/");
         }
-    }, [data]);
+    }, [data, router]);
 
     const onSubmit: SubmitHandler<Schema> = async (formData: Schema) => {
+        const result = schema.safeParse(formData);
+
+        if (!result.success) {
+            console.error("Validation failed", result.error.format());
+            return;
+        }
+
         getRenterId({
             variables: {
                 loginRenterInput: {

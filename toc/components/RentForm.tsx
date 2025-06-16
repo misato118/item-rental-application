@@ -23,10 +23,7 @@ const RentForm = ({ feeType, maxDurationType, renterId }: { feeType: string, max
                         min="0"
                         className="rounded-full pl-1"
                         placeholder="Type here"
-                        {...register("offeringPrice", {
-                            valueAsNumber: true,
-                            validate: feeValue => feeValue !== 0 || "Fee cannot be 0"
-                        })}
+                        {...register("offeringPrice", { valueAsNumber: true, required: true })}
                         />
                 </label>
                 <button type="button" className="py-1 btn rounded-full bg-white border border-neutral-content col-span-2" disabled={true}>
@@ -47,10 +44,7 @@ const RentForm = ({ feeType, maxDurationType, renterId }: { feeType: string, max
                     min="0"
                     className="input input-bordered rounded-full mt-2 col-span-4"
                     placeholder="Type here"                   
-                    {...register("offeringDuration", {
-                        valueAsNumber: true,
-                        validate: durationValue => durationValue !== 0 || "Duration cannot be 0"
-                    })}
+                    {...register("offeringDuration", { valueAsNumber: true, required: true })}
                     />
                 <button type="button" className="py-1 btn rounded-full bg-white border border-neutral-content col-span-2" disabled={true}>
                     {maxDurationType.charAt(0).toUpperCase() + maxDurationType.slice(1)}

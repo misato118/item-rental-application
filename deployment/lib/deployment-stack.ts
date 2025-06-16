@@ -5,15 +5,15 @@ import * as sqs from 'aws-cdk-lib/aws-sqs';
 import { Construct } from 'constructs';
 
 export class DeploymentStack extends Stack {
-    constructor(scope: Construct, id: string, props?: StackProps) {
-        super(scope, id, props);
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
 
-        const queue = new sqs.Queue(this, 'DeploymentQueue', {
-            visibilityTimeout: Duration.seconds(300)
-        });
+    const queue = new sqs.Queue(this, 'DeploymentQueue', {
+      visibilityTimeout: Duration.seconds(300)
+    });
 
-        const topic = new sns.Topic(this, 'DeploymentTopic');
+    const topic = new sns.Topic(this, 'DeploymentTopic');
 
-        topic.addSubscription(new subs.SqsSubscription(queue));
-    }
+    topic.addSubscription(new subs.SqsSubscription(queue));
+  }
 }

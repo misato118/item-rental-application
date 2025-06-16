@@ -57,7 +57,7 @@ const Item: NextPageWithLayout = () => {
                 </div>
 
                 <div className="p-4 mt-4">
-                    {activeTab === "reviews" && <Reviews reviews={data?.itemInfo?.reviews} />}
+                    {activeTab === "reviews" && <Reviews reviews={data?.itemInfo?.reviews ?? []} />}
                     {activeTab === "qa" && <p>This is the Q&A Chat content.</p>}
                 </div>
             </div>

@@ -30,7 +30,7 @@ const CompanyItems = ({ items }: ItemsProps) => {
                             <div className="w-1/2">
                                 <p className="font-bold text-xl mb-2">{item.name}</p>
                                 <p className="text-gray-700 text-base">${item.fee} /{item.feeType}</p>
-                                <div><Rating rating={overallRating} name={item.name} /></div>
+                                <div><Rating rating={overallRating} name={item.name ?? "Not Available"} /></div>
                                 <button
                                     className="py-1 btn rounded-full bg-info text-white font-normal mt-4"
                                     onClick={() => {

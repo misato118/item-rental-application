@@ -24,7 +24,7 @@ const SideNavigation = () => {
             {/* Substitute this image with {renter.imageURL}*/}
             <div>
                 <div className="mb-4 mt-16 flex justify-center items-start">
-                    <Image src="/sampleImg.png" alt="Renter Image" className="rounded-full w-32 h-32" height={32} width={32} />
+                    <Image src="/UserIcon.png" alt="Renter Image" className="rounded-full w-32 h-32" height={32} width={32} />
                 </div>
                 <div className="text-center">
                     <h2 className="font-bold text-white">{data?.renterInfo?.firstName} {data?.renterInfo?.lastName}</h2>

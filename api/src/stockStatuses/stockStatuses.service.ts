@@ -5,31 +5,39 @@ import { Args, Int } from '@nestjs/graphql';
 
 @Injectable()
 export class StockStatusesService {
-  constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
-  findOneById(@Args('itemId', { type: () => Int }) itemId: number) {
-    return this.prisma.stockStatus.findUnique({
-      where: {
-        id: itemId,
-      }
-    });
-  }
+    findOneById(@Args('itemId', { type: () => Int }) itemId: number) {
+        return this.prisma.stockStatus.findUnique({
+            where: {
+                id: itemId,
+            }
+        });
+    }
 
-  create(createStockStatusInput: CreateStockStatusInput) {
-    const itemId = createStockStatusInput.itemId;
-    const updatedInput = { ...createStockStatusInput, ['itemId']: undefined };
+    create(createStockStatusInput: CreateStockStatusInput) {
+        const { itemId, ...updatedInput } = createStockStatusInput;
 
-    return this.prisma.item.update({
-      where: {
-        id: itemId
-      },
-      data: {
-        stockStatus: {
-          create: {
-            ...updatedInput
-          },
-        }
-      },
-    });
-  }
+        return this.prisma.item.update({
+            where: {
+                id: itemId
+            },
+            data: {
+                stockStatus: {
+                    create: {
+                        ...updatedInput
+                    },
+                }
+            },
+        });
+    }
+
+    deleteMany(@Args('itemId', { type: () => Int }) itemId: number) {
+        // deleteMany to avoid an error when data doesn't exist
+        return this.prisma.stockStatus.deleteMany({
+            where: {
+                id: itemId,
+            },
+        });        
+    }
 }

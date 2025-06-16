@@ -69,7 +69,7 @@ export const seed = async () => {
             companyId: 1,
             ownerApplication: {
                 create: {
-                    status: ApplicationStatus.PENDING,
+                    status: ApplicationStatus.PUBLISHED,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -116,7 +116,7 @@ export const seed = async () => {
             companyId: 2,
             ownerApplication: {
                 create: {
-                    status: ApplicationStatus.PENDING,
+                    status: ApplicationStatus.PUBLISHED,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -163,7 +163,7 @@ export const seed = async () => {
             companyId: 2,
             ownerApplication: {
                 create: {
-                    status: ApplicationStatus.PENDING,
+                    status: ApplicationStatus.PUBLISHED,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -257,7 +257,7 @@ export const seed = async () => {
             companyId: 2,
             ownerApplication: {
                 create: {
-                    status: ApplicationStatus.PENDING,
+                    status: ApplicationStatus.PUBLISHED,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },

@@ -28,7 +28,7 @@ const useFilterDropdown = (dataType: string, setValue: UseFormSetValue<FormValue
                 setValue(type, array[2]);
             }
         }
-    }, [timeType, setValue, type]);
+    }, [timeType, setValue, array, type]);
 
     return {
         timeType,

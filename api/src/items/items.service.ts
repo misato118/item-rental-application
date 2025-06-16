@@ -7,143 +7,180 @@ import { FilterItemInput } from './dto/filter-item.input';
 
 @Injectable()
 export class ItemsService {
-  constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
-  // Obtain all items
-  findAll(filter?: FilterItemInput) {
-    return this.prisma.item.findMany({
-      where: {
-        maxDuration: filter?.maxDuration
-          ? {
-              lte: filter?.maxDuration,
-            }
-          : undefined,
-        fee: filter?.maxPrice
-          ? {
-              lte: filter?.maxPrice,
-            }
-          : undefined,
-        feeType: filter?.priceType
-          ? { contains: filter?.priceType }
-          : undefined,
-        maxDurationType: filter?.durationType
-          ? { contains: filter?.durationType }
-          : undefined,
-      },
-    });
-  }
-
-  // Obtain all items by a company name
-  findAllByCompany(
-    @Args('companyName', { type: () => String }) companyName: string,
-  ) {
-    return this.prisma.company.findUnique({
-      where: {
-        name: companyName,
-      },
-      include: {
-        items: {
-          include: {
-            ownerApplication: true,
-            stockStatus: true,
-            renterApplications: {
-              include: {
-                renter: true,
-                renterApplicationStatuses: true,
-              },
+    // Obtain all items
+    findAll(filter?: FilterItemInput) {
+        return this.prisma.item.findMany({
+            where: {
+                maxDuration: filter?.maxDuration
+                    ? {
+                        lte: filter?.maxDuration,
+                    }
+                    : undefined,
+                fee: filter?.maxPrice
+                    ? {
+                        lte: filter?.maxPrice,
+                    }
+                    : undefined,
+                feeType: filter?.priceType
+                    ? { contains: filter?.priceType }
+                    : undefined,
+                maxDurationType: filter?.durationType
+                    ? { contains: filter?.durationType }
+                    : undefined,
             },
-          },
-        },
-      },
-    });
-  }
+        });
+    }
 
-  // Create a new item
-  create(createItemInput: CreateItemInput) {
-    const companyName = createItemInput.company;
-    const updatedInput = { ...createItemInput, ['company']: undefined };
+    // Obtain all items by a company name
+    findAllByCompany(
+        @Args('companyName', { type: () => String }) companyName: string,
+    ) {
+        return this.prisma.company.findUnique({
+            where: {
+                name: companyName,
+            },
+            include: {
+                items: {
+                    include: {
+                        ownerApplication: true,
+                        stockStatus: true,
+                        renterApplications: {
+                            include: {
+                                renter: true,
+                                renterApplicationStatuses: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
 
-    return this.prisma.company.update({
-      where: {
-        name: companyName,
-      },
-      data: {
-        items: {
-          create: {
-            ...updatedInput,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        },
-      },
-    });
-  }
+    // Create a new item
+    create(createItemInput: CreateItemInput) {
+        const companyName = createItemInput.company;
+        const totalStock = createItemInput.totalStock;
+        const currentStock = createItemInput.currentStock;
+        const updatedInput = { ...createItemInput, ['company']: undefined, ['totalStock']: undefined, ['currentStock']: undefined };
 
-  // Update an existing item
-  update(createItemInput: CreateItemInput) {
-    const itemId = createItemInput.id;
-    const updatedInput = {
-      ...createItemInput,
-      ['company']: undefined,
-      ['id']: undefined,
-    };
+        return this.prisma.company.update({
+            where: {
+                name: companyName,
+            },
+            data: {
+                items: {
+                    create: {
+                        ...updatedInput,
+                        ownerApplication: {
+                            create: {
+                                status: ApplicationStatus.DRAFT,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            }
+                        },
+                        stockStatus: {
+                            create: {
+                                totalStock: totalStock,
+                                currentStock: currentStock
+                            }
+                        },
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
+                },
+            },
+        });
+    }
 
-    return this.prisma.item.update({
-      where: {
-        id: itemId,
-      },
-      data: {
-        ...updatedInput,
-        updatedAt: new Date(),
-      },
-    });
-  }
+    // Update an existing item
+    update(createItemInput: CreateItemInput) {
+        const itemId = createItemInput.id;
+        const currentStock = createItemInput.currentStock;
+        const totalStock = createItemInput.totalStock;
+        const updatedInput = {
+            ...createItemInput,
+            ['company']: undefined,
+            ['id']: undefined,
+            ['currentStock']: undefined,
+            ['totalStock']: undefined
+        };
 
-  // Submit an item by creating an owner application
-  submit(createItemInput: CreateItemInput) {
-    const itemId = createItemInput.id;
+        return this.prisma.item.update({
+            where: {
+                id: itemId,
+            },
+            data: {
+                ...updatedInput,
+                updatedAt: new Date(),
+                stockStatus: {
+                    update: {
+                        currentStock: currentStock,
+                        totalStock: totalStock
+                    }
+                }
+            },
+        });
+    }
 
-    return this.prisma.item.update({
-      where: {
-        id: itemId,
-      },
-      data: {
-        ownerApplication: {
-          create: {
-            status: ApplicationStatus.APPLIED,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        },
-      },
-    });
-  }
+    // Submit an item by creating an owner application
+    submit(@Args('itemId', { type: () => Int }) itemId: number) {
+        return this.prisma.item.update({
+            where: {
+                id: itemId,
+            },
+            data: {
+                ownerApplication: {
+                    update: {
+                        status: ApplicationStatus.PENDING,
+                        updatedAt: new Date(),
+                    },
+                },
+            },
+            include: {
+                ownerApplication: true,
+                stockStatus: true,
+            }
+        });
+    }
 
-  // Delete an item
-  delete(@Args('itemId', { type: () => Int }) itemId: number) {
-    return this.prisma.item.delete({
-      where: {
-        id: itemId,
-      },
-    });
-  }
+    // Delete an item
+    delete(@Args('itemId', { type: () => Int }) itemId: number) {
+        return this.prisma.item.delete({
+            where: {
+                id: itemId,
+            },
+        });
+    }
 
-  // TODO: Add a function to conduct a category search
+    // TODO: Add a function to conduct a category search
 
-  // TODO: Add a function to conduct a filter search
+    // TODO: Add a function to conduct a filter search
 
-  // TODO: Add a function to sort by category/review/posted date
+    // TODO: Add a function to sort by category/review/posted date
 
-  // Obtain an item
-  findOneById(@Args('itemId', { type: () => Int }) itemId: number) {
-    return this.prisma.item.findUnique({
-      where: {
-        id: itemId,
-      },
-      include: {
-        company: true,
-        reviews: true,
-      },
-    });
-  }
+    // Obtain an item
+    async findOneById(@Args('itemId', { type: () => Int }) itemId: number) {
+        const item = await this.prisma.item.findUnique({
+            where: {
+                id: itemId,
+            },
+            include: {
+                company: true,
+                reviews: true,
+                stockStatus: true,
+                ownerApplication: true,
+                renterApplications: {
+                    include: {
+                        renter: true,
+                        renterApplicationStatuses: true,
+                        form: true,
+                    }
+                }
+            },
+        });
+
+        return item ?? null;
+    }
 }

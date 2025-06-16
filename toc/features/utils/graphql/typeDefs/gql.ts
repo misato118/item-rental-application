@@ -22,6 +22,7 @@ type Documents = {
     "query GetItemInfo($itemId: Int!) {\n  itemInfo(itemId: $itemId) {\n    id\n    name\n    description\n    createdAt\n    category\n    fee\n    feeType\n    maxDuration\n    maxDurationType\n    imageURL\n    deposit\n    company {\n      name\n      logoURL\n      description\n    }\n    reviews {\n      id\n      title\n      contents\n      rating\n    }\n  }\n}": typeof types.GetItemInfoDocument,
     "query GetRenterId($loginRenterInput: LoginRenterInput!) {\n  renterId(loginRenterInput: $loginRenterInput) {\n    id\n  }\n}": typeof types.GetRenterIdDocument,
     "query GetRenterInfo($renterId: Int!) {\n  renterInfo(renterId: $renterId) {\n    id\n    username\n    firstName\n    lastName\n    birthDate\n    email\n    createdAt\n    updatedAt\n    imageURL\n    renterApplications {\n      id\n      form {\n        id\n        offeringPrice\n        offeringDuration\n      }\n      renterApplicationStatuses {\n        id\n        status\n        updatedAt\n      }\n      item {\n        id\n        name\n        fee\n        feeType\n        maxDuration\n        maxDurationType\n        company {\n          name\n        }\n      }\n    }\n  }\n}": typeof types.GetRenterInfoDocument,
+    "mutation ChangeRenterAppStatus($changeRenterAppStatusInput: ChangeRenterAppStatusInput!) {\n  changeRenterAppStatus(changeRenterAppStatusInput: $changeRenterAppStatusInput)\n}": typeof types.ChangeRenterAppStatusDocument,
 };
 const documents: Documents = {
     "mutation CreateRenter($createRenterInput: CreateRenterInput!) {\n  createRenter(createRenterInput: $createRenterInput) {\n    id\n  }\n}": types.CreateRenterDocument,
@@ -32,6 +33,7 @@ const documents: Documents = {
     "query GetItemInfo($itemId: Int!) {\n  itemInfo(itemId: $itemId) {\n    id\n    name\n    description\n    createdAt\n    category\n    fee\n    feeType\n    maxDuration\n    maxDurationType\n    imageURL\n    deposit\n    company {\n      name\n      logoURL\n      description\n    }\n    reviews {\n      id\n      title\n      contents\n      rating\n    }\n  }\n}": types.GetItemInfoDocument,
     "query GetRenterId($loginRenterInput: LoginRenterInput!) {\n  renterId(loginRenterInput: $loginRenterInput) {\n    id\n  }\n}": types.GetRenterIdDocument,
     "query GetRenterInfo($renterId: Int!) {\n  renterInfo(renterId: $renterId) {\n    id\n    username\n    firstName\n    lastName\n    birthDate\n    email\n    createdAt\n    updatedAt\n    imageURL\n    renterApplications {\n      id\n      form {\n        id\n        offeringPrice\n        offeringDuration\n      }\n      renterApplicationStatuses {\n        id\n        status\n        updatedAt\n      }\n      item {\n        id\n        name\n        fee\n        feeType\n        maxDuration\n        maxDurationType\n        company {\n          name\n        }\n      }\n    }\n  }\n}": types.GetRenterInfoDocument,
+    "mutation ChangeRenterAppStatus($changeRenterAppStatusInput: ChangeRenterAppStatusInput!) {\n  changeRenterAppStatus(changeRenterAppStatusInput: $changeRenterAppStatusInput)\n}": types.ChangeRenterAppStatusDocument,
 };
 
 /**
@@ -80,6 +82,10 @@ export function graphql(source: "query GetRenterId($loginRenterInput: LoginRente
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetRenterInfo($renterId: Int!) {\n  renterInfo(renterId: $renterId) {\n    id\n    username\n    firstName\n    lastName\n    birthDate\n    email\n    createdAt\n    updatedAt\n    imageURL\n    renterApplications {\n      id\n      form {\n        id\n        offeringPrice\n        offeringDuration\n      }\n      renterApplicationStatuses {\n        id\n        status\n        updatedAt\n      }\n      item {\n        id\n        name\n        fee\n        feeType\n        maxDuration\n        maxDurationType\n        company {\n          name\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query GetRenterInfo($renterId: Int!) {\n  renterInfo(renterId: $renterId) {\n    id\n    username\n    firstName\n    lastName\n    birthDate\n    email\n    createdAt\n    updatedAt\n    imageURL\n    renterApplications {\n      id\n      form {\n        id\n        offeringPrice\n        offeringDuration\n      }\n      renterApplicationStatuses {\n        id\n        status\n        updatedAt\n      }\n      item {\n        id\n        name\n        fee\n        feeType\n        maxDuration\n        maxDurationType\n        company {\n          name\n        }\n      }\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation ChangeRenterAppStatus($changeRenterAppStatusInput: ChangeRenterAppStatusInput!) {\n  changeRenterAppStatus(changeRenterAppStatusInput: $changeRenterAppStatusInput)\n}"): (typeof documents)["mutation ChangeRenterAppStatus($changeRenterAppStatusInput: ChangeRenterAppStatusInput!) {\n  changeRenterAppStatus(changeRenterAppStatusInput: $changeRenterAppStatusInput)\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

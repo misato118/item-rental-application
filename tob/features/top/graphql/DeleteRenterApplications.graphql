@@ -1,0 +1,3 @@
+mutation DeleteRenterApplications($itemId: Int!) {
+    deleteRenterApplications(itemId: $itemId)
+}
