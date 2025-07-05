@@ -40,11 +40,10 @@ You can explore the live deployed version.
 
 ### 🌐 Live Demo
 
-- **🧑 Frontend (Renter)**: http://15.156.197.82:3000
-- **💼 Frontend (Company)**: http://3.96.207.41:3000
+- **🧑 Frontend (Renter)**: [Currently under maintenance]
+- **💼 Frontend (Company)**: [Currently under maintenance]
 - **🖥️ Frontend (Admin)**: In Progress
-- **⚙️ Backend API (GraphQL Playground)**: 
-http://itemre-alb16-s1njhbvhhvee-1849151201.ca-central-1.elb.amazonaws.com/graphql
+- **⚙️ Backend API (GraphQL Playground)**: [Currently under maintenance]
 
 ## System Architecture
 
